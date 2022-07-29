@@ -2,22 +2,12 @@ const express = require('express')
 const cowsay = require('cowsay')
 const cors = require('cors')
 const path = require('path')
-const mongoose = require("mongoose");
-const Category = require("../models/Category");
 
 // Create the server
 const app = express()
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, 'client/build')))
-
-mongoose
-    .connect(process.env.MONGO_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(console.log("Connected to MongoDB"))
-    .catch((err) => console.log(err));
 
 // Serve our api route /cow that returns a custom talking text cow
 app.get('/api/cow/:say', cors(), async (req, res, next) => {
@@ -33,10 +23,8 @@ app.get('/api/cow/:say', cors(), async (req, res, next) => {
 // Serve our base route that returns a Hellow World cow
 app.get('/api/cow/', cors(), async (req, res, next) => {
   try {
-    const cats = await Category.find();
-
-    const moo = cowsay.say({ text: cats })
-    res.json(cats)
+    const moo = cowsay.say({ text: 'Hello World!' })
+    res.json({ moo })
   } catch (err) {
     next(err)
   }
